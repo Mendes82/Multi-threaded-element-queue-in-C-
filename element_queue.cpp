@@ -1,15 +1,16 @@
 #include <queue>
 #include <thread>
-#include <mutex>
-#include <condition_variable>
 #include <iostream> 
 #include <unistd.h>
 #include <functional>
 #include <atomic>
+#include <mutex>
+//#include <condition_variable>
 
 template <class T> class Queue
 {
 	private:
+        //std::condition_variable cond_;
 		std::mutex mutex_;
 		bool waitFinished;
 		int max_size;
@@ -28,14 +29,12 @@ template <class T> class Queue
 				 std::cout << "block, waiting for pop" << std::endl;
 				 mlock.unlock();
 				 std::this_thread::sleep_for(std::chrono::milliseconds(Sleep));
-				 waitFinished = true;
 				}
 				std::unique_lock<std::mutex> mlock(mutex_);
 				data.push(element);
                 std::cout << "Write, queue element: " << element << " size: " << data.size() << std::endl;
 				mlock.unlock();
-               
-			}
+            }
 		T pop()
 			{
 				while (data.size() <= 0)
@@ -44,7 +43,6 @@ template <class T> class Queue
 				 std::cout << "block, waiting for push " << std::endl;
 				 mlock.unlock();
 				 std::this_thread::sleep_for(std::chrono::milliseconds(Sleep));
-				 waitFinished = true;
 				}
 				std::unique_lock<std::mutex> mlock(mutex_);
 				T element = data.front(); 
@@ -62,7 +60,7 @@ template <class T> class Queue
 
 void Write(Queue<int>& q) 
 {
-  for (int i = 1; i< 100; ++i) 
+  for (int i = 1; i< 101; ++i) 
   {
    q.push(i);
   }
@@ -70,7 +68,7 @@ void Write(Queue<int>& q)
 
 void Read(Queue<int>& q) 
 {
-  for (int i = 1; i< 100; ++i) 
+  for (int i = 1; i< 101; ++i) 
   {
     q.pop();
   }
