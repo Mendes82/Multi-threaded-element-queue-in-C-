@@ -53,10 +53,10 @@ class Queue
              return front;
            }
 	    int size() const //not used
-			{
-			 int result = data.size();
-			 return result;
-			}
+	   {
+	    int result = data.size();
+	    return result;
+	   }
  
 };
 
