@@ -17,8 +17,8 @@ class Queue
        int Sleep;
        bool SleepFinished;
    public:
-   	   Queue(int max_size)
-   	        : max_size(max_size),Sleep(50),SleepFinished(false) //condition SleepFinished not used
+       Queue(int max_size)
+   	  : max_size(max_size),Sleep(50),SleepFinished(false) //condition SleepFinished not used
 			{}
        void push(T element) 
            {
@@ -52,29 +52,31 @@ class Queue
              cond_.notify_one();
              return front;
            }
-	    int size() const //not used
+       int size() const //not used
 	   {
 	    int result = data.size();
 	    return result;
 	   }
- 
-};
+ };
 
-void Write(Queue<int>& q) {
+void Write(Queue<int>& q) 
+{
   for (int i = 1; i< 1001; ++i) 
   {
     q.push(i);
   }
 }
 
-void Read(Queue<int>& q, unsigned int id) {
+void Read(Queue<int>& q, unsigned int id) 
+{
   for (int i = 1; i< 1001; ++i) 
   {
     q.pop();
   }
 }
 
-int main() {
+int main() 
+{
   Queue<int> q (2);
 
   using namespace std::placeholders;
