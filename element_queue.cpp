@@ -32,7 +32,7 @@ template <class T> class Queue
 				}
 				std::unique_lock<std::mutex> mlock(mutex_);
 				data.push(element);
-                std::cout << "Write, queue element: " << element << " size: " << data.size() << std::endl;
+                                std::cout << "Write, queue element: " << element << " size: " << data.size() << std::endl;
 				mlock.unlock();
             }
 		T pop()
@@ -47,7 +47,7 @@ template <class T> class Queue
 				std::unique_lock<std::mutex> mlock(mutex_);
 				T element = data.front(); 
 				data.pop();
-                std::cout << "Read, front element: " << element << " size: " << data.size() << std::endl;
+                                std::cout << "Read, front element: " << element << " size: " << data.size() << std::endl;
 				mlock.unlock();
 				return element;
 			}
