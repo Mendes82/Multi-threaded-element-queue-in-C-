@@ -13,12 +13,11 @@ template <class T> class Queue
 		std::mutex mutex_;
 		bool waitFinished;
 		int max_size;
-		int ReadingSleep;
-        int WritingSleep;
+		int Sleep;
 	public:
     	std::queue<T> data;
 		Queue(int max_size = 2)
-			: max_size(max_size),waitFinished(false),ReadingSleep(50), WritingSleep(50)
+			: max_size(max_size),waitFinished(false),Sleep(50)
 			{}
 		
 		void push(T element)
@@ -28,7 +27,7 @@ template <class T> class Queue
 				 std::unique_lock<std::mutex> mlock(mutex_);
 				 std::cout << "block, waiting for pop" << std::endl;
 				 mlock.unlock();
-				 std::this_thread::sleep_for(std::chrono::milliseconds(WritingSleep));
+				 std::this_thread::sleep_for(std::chrono::milliseconds(Sleep));
 				 waitFinished = true;
 				}
 				std::unique_lock<std::mutex> mlock(mutex_);
@@ -44,7 +43,7 @@ template <class T> class Queue
 				 std::unique_lock<std::mutex> mlock(mutex_);
 				 std::cout << "block, waiting for push " << std::endl;
 				 mlock.unlock();
-				 std::this_thread::sleep_for(std::chrono::milliseconds(ReadingSleep));
+				 std::this_thread::sleep_for(std::chrono::milliseconds(Sleep));
 				 waitFinished = true;
 				}
 				std::unique_lock<std::mutex> mlock(mutex_);
@@ -56,9 +55,7 @@ template <class T> class Queue
 			}
 		int size() const
 			{
-			 std::unique_lock<std::mutex> mlock(mutex_);
 			 int result = data.size();
-			 mlock.unlock();
 			 return result;
 			}
 };
@@ -97,5 +94,3 @@ int main() {
 
   return 0;
 }
-
-
