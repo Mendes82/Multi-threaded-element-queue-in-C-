@@ -15,18 +15,16 @@ class Queue
        std::condition_variable cond_;
        const unsigned int max_size; 
        int Sleep;
-       bool SleepFinished;
    public:
        Queue(int max_size)
-   	  : max_size(max_size),Sleep(50),SleepFinished(false) //condition SleepFinished not used
+   	  : max_size(max_size),Sleep(50)
 			{}
        void push(T element) 
            {
              std::unique_lock<std::mutex> mlock(mutex_);
              while (data.size() >= max_size) 
              {
-              std::cout << "blocks, waiting for pop" << std::endl;
-              //std::this_thread::sleep_for(std::chrono::milliseconds(Sleep));  //optional
+              std::cout << "push (" << element <<") block, waiting for pop" << std::endl;
               cond_.wait(mlock);
               std::cout << "push (" << element <<") is realesed"  <<std::endl;
              }
@@ -34,14 +32,14 @@ class Queue
              std::cout << "Writing, queue element: " << element << "   size: " <<  data.size() << std::endl;
              mlock.unlock();
              cond_.notify_one();
+             std::this_thread::sleep_for(std::chrono::milliseconds(Sleep));
            }
        T pop() 
            {
              std::unique_lock<std::mutex> mlock(mutex_);
              while (data.empty()) 
              {
-              std::cout << "blocks, waiting for push" << std::endl;
-              //std::this_thread::sleep_for(std::chrono::milliseconds(Sleep));  //optional
+              std::cout << "pop block, waiting for push" << std::endl;
               cond_.wait(mlock);
               std::cout << "pop is realesed "<< std::endl;
              }
@@ -50,8 +48,9 @@ class Queue
              std::cout << "Reading, popped element: " << front << "   size: " << data.size() << std::endl;
              mlock.unlock();
              cond_.notify_one();
+             std::this_thread::sleep_for(std::chrono::milliseconds(Sleep));
              return front;
-           }
+            }
        int size() const //not used
 	   {
 	    int result = data.size();
